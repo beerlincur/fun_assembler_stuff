@@ -1,0 +1,70 @@
+DOSSEG
+ .MODEL SMALL
+ .STACK	100h
+ .DATA
+ MAS1 DB 10 DUP(0)
+ MAS2 DB 10 DUP(0)
+ MSG1 DB 10,13,"First:",10,13,"$"
+ MSG2 DB 10,13,"Second:",10,13,"$"
+ PRESS DB 10,13,"Press smth..$"
+ .CODE 
+ start:    
+ mov	ax,@Data
+ mov	ds,ax
+
+ ;ввод первого массива
+ mov cx,10
+ mov si,0
+ input:
+ mov ah,01h
+ mov al ,001h
+ int 21h
+ sub al,30h
+ mov [MAS1+si],al
+ add si,1
+ loop input
+ ;вывод на экран первого массива
+ lea dx, MSG1
+ mov ah,09h
+ int 21h
+ 
+ mov cx,10;цикл по 10 элементам
+ mov si,0
+ put1:
+ mov ah,02h;вывод символа на экран
+ mov dl,[MAS1+si];берем элем массива
+ add dl,30h;получаем аски код
+ int 21h
+ add si,1
+ loop put1
+;запись во второй массив
+mov cx,10
+mov si,0
+metka1:
+mov dl,[MAS1+si]
+mov [MAS2+si],dl
+inc si
+loop metka1
+;вывод на экран рехультир массива
+lea dx,MSG2                                                                                                    
+mov ah,09h
+int 21h
+mov cx,10
+mov si,0
+put2:
+mov ah,02h
+mov dl,[MAS2+si]
+add dl,30h
+int 21h
+add si,1
+loop put2
+;ожидание нажатия любой клавиши
+lea dx,PRESS
+mov ah,09h
+int 21h
+mov ah,00h
+int 16h
+;выход
+mov ax,4c00h
+int 21h
+END START 
